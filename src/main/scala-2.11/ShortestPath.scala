@@ -63,7 +63,7 @@ object ShortestPath {
     while (isUpdated) {
       isUpdated = false
       edges.foreach { e =>
-        if(distances(e.from) != Int.MaxValue
+        if (distances(e.from) != Int.MaxValue
           && distances(e.to) > distances(e.from) + e.distance) {
           distances = distances + (e.to -> (distances(e.from) + e.distance))
           isUpdated = true
@@ -86,7 +86,7 @@ object ShortestPath {
     while (isUpdated) {
       isUpdated = false
       edges.foreach { e =>
-        if(!usedEdges.contains(e)
+        if (!usedEdges.contains(e)
           && distances(e.from) != Int.MaxValue
           && distances(e.to) > distances(e.from) + e.distance) {
           distances = distances + (e.to -> (distances(e.from) + e.distance))
@@ -101,7 +101,16 @@ object ShortestPath {
   }
 
   def solveByWarshallFloyd(start: Char, goal: Char): Unit = {
-    ???
-  }
+    // 二頂点間の距離の初期化
+    var distanceMap: Map[(Char, Char), Int] = vertexes.map(v => ((v, v) -> 0)).toMap
+    distanceMap = distanceMap ++ edges.map(e => (e.from, e.to) -> e.distance)
 
+    def distance(v1: Char, v2: Char): Int = distanceMap.getOrElse((v1, v2), Int.MaxValue / 2)
+
+    for (v1 <- vertexes; v2 <- vertexes; v3 <- vertexes) {
+      distanceMap = distanceMap + ((v2, v3) -> math.min(distance(v2, v3), distance(v2, v1) + distance(v1, v3)))
+    }
+    println(distanceMap)
+    println(distanceMap((start, goal)))
+  }
 }
