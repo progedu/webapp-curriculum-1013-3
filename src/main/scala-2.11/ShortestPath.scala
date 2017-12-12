@@ -108,7 +108,6 @@ object ShortestPath {
 
     for(i<- 0 to n-1){
       for(j <- 0 to n-1){
-        println(i,j)
         if(i == j){
           dmap(i)(j) = 0
         }
@@ -140,12 +139,13 @@ object ShortestPath {
     //経路を表示
     for(i<-0 to n-1){
       for(j<-0 to n-1){
-        if(dmap(i)(j) != Integer.MAX_VALUE && i != j){
+        if(dmap(i)(j) != Integer.MAX_VALUE/2 && i != j){
           printf("%s,%s=>%d, ",(i+'A').toChar,(j+'A').toChar,dmap(i)(j))
         }
       }
     }
 
+    println()
     //start - goal の最短経路を表示
     println(dmap(start - 'A')(goal - 'A'))
 
