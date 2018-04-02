@@ -3,7 +3,7 @@
   */
 case class Edge(from: Char, to: Char, distance: Int)
 
-object ShortestPath {
+object ShortestPath extends App {
 
   /**
     * 頂点
@@ -100,8 +100,26 @@ object ShortestPath {
     println(distances(goal))
   }
 
-  def solveByWarshallFloyd(start: Char, goal: Char): Unit = {
-    ???
+  def solveByWarshallFloyd(start: Char, goal: Char): Map[(Char, Char), Int] = {
+    // 二頂点間の距離の初期化
+    var distanceMap: Map[(Char, Char), Int] = vertexes.map(v => ((v , v) -> 0)).toMap
+    distanceMap = distanceMap ++ edges.map(e => (e.from, e.to) -> e.distance)
+
+    val DistMax:Int = Int.MaxValue/2; // no edge
+    def distance(from: Char, to: Char): Int = distanceMap.getOrElse((from, to), DistMax)
+
+    for (via <- vertexes; from <- vertexes; to <- vertexes) {
+      distanceMap =  distanceMap updated
+        ((from, to), math.min(distance(from, to), distance(from, via) + distance(via, to)))
+    }
+
+    distanceMap
   }
 
+  solveByBellmanFord('A', 'N')
+  solveByDijkstra('A', 'N')
+  val mp = solveByWarshallFloyd('A', 'N')
+  println(mp)
+  println(mp(('A', 'N')))
+  println(mp(('B', 'M')))
 }
