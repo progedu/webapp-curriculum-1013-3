@@ -101,7 +101,67 @@ object ShortestPath {
   }
 
   def solveByWarshallFloyd(start: Char, goal: Char): Unit = {
-    ???
+    // let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)
+    // 頂点同士の距離を保持した距離マトリクスを作成
+    val size = edges.length
+    val dist = Array.ofDim[Int](size, size)
+
+    // let next be a |V| × |V| array of vertex indices initialized to null
+    // 経路情報のための経路マトリクスを作成
+    val next = Array.ofDim[Char](size, size)
+
+    // 距離マトリクスと経路マトリクスの初期化
+    for(i <- 0 until size) {
+      for (j <- 0 until size){
+        // 頂点間の距離を初期化：自分自身への距離は０、それ以外へは整数の最大値を初期値とする
+        dist(i)(j) = if(i == j) 0 else Int.MaxValue
+        next(i)(j) = '_'
+      }
+    }
+
+    // for each edge (u,v)
+    // すでに判明している頂点間の距離をマトリクスに格納していく
+    edges.foreach {e =>
+      // dist[u][v] ← w(u,v)  // the weight of the edge (u,v)
+      val (row, col, distance) = (charToNum(e.from), charToNum(e.to), e.distance) // 'A'-> 0, 'B'-> 1 ...
+      dist(row)(col) = distance
+      next(row)(col) = e.to // next[u][v] ← v
+    }
+
+    // 中間地点を足掛かりに、頂点間の最短距離の更新をしていくループ
+    for(k <- 0 until size) {
+      for(i <- 0 until size) {
+        for(j <- 0 until size) {
+          if (dist(i)(j) > (dist(i)(k) + dist(k)(j))
+            && dist(i)(k) != Int.MaxValue && dist(k)(j) != Int.MaxValue) { // 負の数に反転してしまうのを阻止
+            dist(i)(j) = dist(i)(k) + dist(k)(j)
+            next(i)(j) = next(i)(k)
+          }
+        }
+      }
+    }
+
+    // 始点uと終点vの文字を対応するインデックスに変換
+    var u = charToNum(start)
+    var v = charToNum(goal)
+    
+    // 最短距離を表示
+    println(dist(u)(v)) //  'A' -- 'N' == 22
+
+    // ゴールまでに通った経路の作成
+    var paths: Seq[Char] = Seq()
+    paths = paths :+ numToChar(u)
+    while(u != v ) {
+      u = charToNum(next(u)(v))
+      paths = paths :+ numToChar(u)
+    }
+
+    // スタートからゴールまでの経路を表示
+    println(paths)  
   }
+
+  // 配列のインデックス処理の関係で'A'<--->0、'B'<--->1、になるように、文字と数値 の変換を行う
+  def charToNum(v: Char): Int = v.toInt - 65
+  def numToChar(i: Int): Char = (i + 65).toChar
 
 }
