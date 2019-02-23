@@ -101,7 +101,23 @@ object ShortestPath {
   }
 
   def solveByWarshallFloyd(start: Char, goal: Char): Unit = {
-    ???
+    val INF = 9999
+    var distances: Map[(Char, Char), Int] = edges.map { e => (e.from, e.to) -> e.distance }.toMap ++ vertexes.map { v => (v, v) -> 0 }.toMap
+
+    def distance(a: Char, b: Char): Int = distances.getOrElse((a, b), INF)
+
+    for(from <- vertexes; to <- vertexes; via <- vertexes) {
+      distances = distances + ( (from, to) -> math.min(distance(from, to), distance(from, via) + distance(via, to)) )
+    }
+
+    println(distances)
+    println(distances(start, goal))
+  }
+
+  def main(args: Array[String]): Unit = {
+    solveByBellmanFord('A', 'N')
+    solveByDijkstra('A', 'N')
+    solveByWarshallFloyd('A', 'N')
   }
 
 }
