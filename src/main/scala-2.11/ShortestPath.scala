@@ -101,7 +101,26 @@ object ShortestPath {
   }
 
   def solveByWarshallFloyd(start: Char, goal: Char): Unit = {
-    ???
+    val nodesDistance = (for (i <- 'A' to 'N'; j <- 'A' to 'N') yield ((i, j) -> (if (i == j) 0 else Int.MaxValue))).toMap
+
+    val updatedMap = edges.foldLeft(nodesDistance) ((acc, e) => {
+      acc + ((e.from, e.to) -> e.distance)
+    })
+
+    val indexes = for (i <- 'A' to 'N'; j <- 'A' to 'N'; k <- 'A' to 'N')yield (i, j, k)
+
+    val result = indexes.foldLeft(updatedMap) {case (acc, (i, j, k)) => {
+      if (acc((i ,j)) > acc((i, k)) + acc((k, j))
+        && acc((i, k)) != Int.MaxValue
+        && acc((k, j)) != Int.MaxValue) {
+        acc + ((i, j) -> (acc((i, k)) + acc((k, j))))
+      }
+      else acc
+    }}
+
+    println(result)
+    println(result((start, goal)))
+  
   }
 
 }
