@@ -103,6 +103,8 @@ object ShortestPath {
     for (v1 <- vertexes; v2 <- vertexes; v3 <- vertexes) {
       distanceMap = distanceMap + ((v2, v3) -> math.min(distance(v2, v3), distance(v2, v1) + distance(v1, v3)))
     }
+    println(distanceMap)
+    println(distanceMap(start, goal))
   }
 
 }
