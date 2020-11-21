@@ -101,7 +101,15 @@ object ShortestPath {
   }
 
   def solveByWarshallFloyd(start: Char, goal: Char): Unit = {
-    ???
+    // 二頂点間の距離の初期化
+    var distanceMap: Map[(Char, Char), Int] = vertexes.map(v => ((v, v) -> 0)).toMap
+    distanceMap = distanceMap ++ edges.map(e => (e.from, e.to) -> e.distance)
+    def distance(v1: Char, v2: Char): Int = distanceMap.getOrElse((v1, v2), Int.MaxValue / 2)
+    for (k <- vertexes; i <- vertexes; j <- vertexes) {
+      distanceMap = distanceMap + ((i, j) -> math.min(distance(i, j), distance(i, k) + distance(k, j)))
+    }
+    println(distanceMap)
+    println(distanceMap((start, goal)))
   }
 
 }
